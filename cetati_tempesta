@@ -1,0 +1,139 @@
+conky.config = {
+-- Conky settings #
+-- Author Kal & Racherry 
+	background = false,
+	update_interval = 2,
+
+	cpu_avg_samples = 2,
+	net_avg_samples = 2,
+
+	override_utf8_locale = true,
+
+	double_buffer = true,
+	no_buffers = true,
+	
+	text_buffer_size = 2048,
+--imlib_cache_size 0
+
+	temperature_unit = 'celsius',
+
+-- Window specifications #
+	own_window_class = 'Conky',
+	own_window = true,
+	own_window_type = 'normal',
+	own_window_transparent = true,
+	own_window_hints = 'undecorated,sticky,skip_taskbar,skip_pager,below',
+
+	border_inner_margin = 0,
+	border_outer_margin = 0,
+
+	minimum_width = 520, minimum_height = 600,
+	maximum_width = 520,
+
+	alignment = 'top_right',
+	gap_x = 30,
+	gap_y = 0,
+
+-- Graphics settings #
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = false,
+
+	default_color = 'gray',
+	default_shade_color = 'red',
+	default_outline_color = 'green',
+
+-- Text settings #
+	use_xft = true,
+	override_utf8_locale = true,
+	font = 'RobotoMono-Regular:size=10',
+	xftalpha = 1,
+	uppercase = false,
+
+	temperature_unit = 'celsius',
+
+	default_color = '#999999',
+	color0 = '#36454f',
+	color1 = '#e4fbff',
+	color2 = '#1994D1',
+	color3 = '#fa1e0e', 
+	color4 = '#e4fbff',
+--color3 1994D1 
+
+-- Lua Load  ##${voffset 750}
+	lua_load = 'script/cetati_tempesta_style.lua',
+
+--lua_draw_hook_pre ring_stats
+	lua_draw_hook_pre = 'conky_main',
+
+};
+
+conky.text = [[
+$color1${execi 3600 script/cetati.sh weather}
+${goto 20}${color2}${image ./icons/map-marker.png -p 10,80 -s 12x12} $color4${voffset 60} ${goto 30}${execi 3600 cat script/weather.json | jq -r '.name'} - ${execi 3600 cat script/weather.json | jq -r '.sys.country'}
+${color2}${image ./icons/temp.png -p 10,100 -s 50x50}${voffset 5}${goto 70}$color4${font Sans:size=30}${execi 3600 cat script/weather.json | jq '.main.temp'}°c$color1 ${font Pf Tempesta Five:bold:size=10}feels like (${execi 3600 cat script/weather.json | jq '.main.feels_like'}°c)
+${goto 70}${color2}${font Pf Tempesta Five:bold:size=8}$color4$font ${execi 3600 cat script/weather.json | jq -r '.weather[0].main'}
+${goto 20}${color4}${font Pf Tempesta Five:bold:size=8}${image ./icons/arrow-down.png -p 10,173 -s 11x11} ${voffset 10}$color0 Min: $color1${execi 3600 cat script/weather.json | jq '.main.temp_min'}°  
+${voffset -15}${goto 215}${color4}${font Pf Tempesta Five:bold:size=8}${image ./icons/arrow-up.png -p 200,173 -s 12x12}$color0 Max: $color1${execi 3600 cat script/weather.json | jq '.main.temp_max'}°
+${goto 20}${color4}${font Pf Tempesta Five:bold:size=8}${image ./icons/humidity.png -p 10,190 -s 15x15} ${voffset 6}$color0 Humidity: $color1${execi 3600 cat script/weather.json | jq '.main.humidity'}% 
+${voffset -11}${goto 215}${color4}${font Pf Tempesta Five:bold:size=8}${image ./icons/50d.png -p 200,195 -s 15x15}$color0 Winds: $color1${execi 3600 cat script/weather.json | jq '.wind.speed'} m/s from ${execi 3600 ./script/cetati.sh wind}${image ./icons/windir.png -p 420,160 -s 70x70}
+${goto 20}${color4}${font Pf Tempesta Five:bold:size=8}${image ./icons/pressure.png -p 10,212 -s 15x15} ${voffset 4}$color0 Pressure: $color1${execi 3600 cat script/weather.json | jq '.main.pressure'} hPa
+${voffset 8}${goto 20}${color4}${font Pf Tempesta Five:bold:size=8}${image ./icons/update.png -p 10,238 -s 13x13} $color0 Last Update: $color1${execi 3600 date +"%d-%m-%Y %l:%M:%S"}
+${font Pf Tempesta Five:bold:size=7}${voffset 9}${goto 170}${color0}${acpitemp} °C
+${font Pf Tempesta Five:bold:size=7}${voffset -1}${goto 150}${color0}CPU 1 ${alignr 290}${color1}${cpu cpu0}%
+${font Pf Tempesta Five:bold:size=7}${voffset 1}${goto 150}${color0}CPU 2${alignr 290}${color1}${cpu cpu1}%
+${font Pf Tempesta Five:bold:size=7}${voffset 2}${goto 150}${color0}CPU 3${alignr 290}${color1}${cpu cpu2}%
+${font Pf Tempesta Five:bold:size=7}${voffset 3}${goto 150}${color0}CPU 4${alignr 290}${color1}${cpu cpu3}%
+${goto 60}${voffset 12}${font Pf Tempesta Five:bold:size=7}${color0}${top name 1}${alignr 306}${color1}${top cpu 1}%
+${goto 60}${font Pf Tempesta Five:bold:size=7}${color0}${top name 2}${alignr 306}${color1}${top cpu 2}%
+${goto 60}${font Pf Tempesta Five:bold:size=7}${color0}${top name 3}${alignr 306}${color1}${top cpu 3}%
+${font Pf Tempesta Five:bold:size=13}${color3}${goto 2}${voffset 15}cpu ${freq_g cpu0} ghz ${image ./icons/om.png -p 335,240 -s 190x190}
+${font AMDRTG:size=13}${color3}${goto 410}${voffset 40}memory
+${goto 325}${voffset 1}${font Pf Tempesta Five:bold:size=7}${color0}${top_mem name 1}${alignr 40}${color1}${top_mem mem 1}%
+${goto 325}${font Pf Tempesta Five:bold:size=7}${color0}${top_mem name 2}${alignr 40}${color1}${top_mem mem 2}%
+${goto 325}${font Pf Tempesta Five:bold:size=7}${color0}${top_mem name 3}${alignr 40}${color1}${top_mem mem 3}%
+${font Pf Tempesta Five:bold:size=7}${voffset 11}${goto 360}${color0}SWAP${alignr 10}${color1}${swap} / ${color1}${swapmax}
+${font Pf Tempesta Five:bold:size=7}${voffset -1}${goto 361}${color0}RAM ${alignr 10}${color1}${mem} / ${color1}${memmax}
+${font Pf Tempesta Five:bold:size=7}${goto 20}${voffset -85}${color0}Kal${color1}${alignr 310}${execi 86400 du -sh ~ | awk '{print $1}'} / ${fs_size /}
+${font Pf Tempesta Five:bold:size=7}${goto 20}${voffset -3}${color0}Arsenal${alignr 310}${color1}${execi 86400 du -sh ~/Arsenal | awk '{print $1}'} / ${fs_size /}
+${font Pf Tempesta Five:bold:size=7}${goto 20}${voffset -2}${color0}VBox${alignr 310}${color1}${execi 86400 du -sh ~/VirtualBox\ VMs | awk '{print $1}'} / ${fs_size /}
+${font Pf Tempesta Five:bold:size=7}${goto 20}${voffset -1}${color0}Downloads${alignr 310}${color1}${execi 86400 du -sh ~/Downloads | awk '{print $1}'} / ${fs_size /}
+${font AMDRTG:size=13}${color3}${goto 5}${voffset 35}hard drive
+
+
+# EDITION FINIR WLAN
+${if_up wlp3s0}${font Pf Tempesta Five:bold:size=7}${color0}${goto 290}${voffset -55}WiFi${goto 350}${color1}${wireless_essid wlp3s0}${font Pf Tempesta Five:bold:size=7}${color0}${goto 290}${voffset 14}Up${goto 350}${color1}${totalup wlp3s0} / ${color1}${upspeed wlp3s0} 
+${font Pf Tempesta Five:bold:size=7}${goto 290}${color0}Down${goto 350}${color1}${totaldown wlp3s0} / ${color1}${downspeed wlp3s0}
+${font Pf Tempesta Five:bold:size=7}${goto 280}${voffset 2}${color0} Local IP${goto 350}${color1}${addr wlp3s0}
+${font Pf Tempesta Five:bold:size=7}${goto 280}${voffset -1}${color0} Public IP${goto 350}${color1}${execi 3600 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}
+${font AMDRTG:size=13}${color3}${voffset 30}${goto 340}internet
+${font Pf Tempesta Five:bold:size=10}${goto 11}${voffset -93}${color3}${time %x}
+${font Pf Tempesta Five:bold:size=10}${goto 70}${color1}${voffset 0}${time %l}:${time %M}
+${font AMDRTG:size=13}${goto 250}${color3}${voffset 90} battery
+${font Pf Tempesta Five:bold:size=9}${color0}${goto 220}${voffset 5}${color1}${battery_percent BAT0}%
+${font Pf Tempesta Five:bold:size=9}${color0}${goto 220}${voffset 5}${color1}${battery_percent BAT1}%
+
+
+
+# |--enp0s25
+${else}${if_up enp0s25}${font Pf Tempesta Five:bold:size=7}${color0}${goto 290}${voffset 14}Up${goto 350}${color1}${totalup enp0s25} / ${color1}${upspeed enp0s25} 
+${font Pf Tempesta Five:bold:size=7}${goto 290}${color0}Down${goto 350}${color1}${totaldown enp0s25} / ${color1}${downspeed enp0s25}
+${font Pf Tempesta Five:bold:size=7}${goto 280}${voffset 2}${color0} Local IP${goto 350}${color1}${addr enp0s25}
+${font Pf Tempesta Five:bold:size=7}${goto 320}${voffset -1}${color0} Public IP${goto 400}${color1}${execi 3600 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}
+${font AMDRTG:size=13}${color3}${voffset 30}${goto 340}internet
+${font Pf Tempesta Five:bold:size=10}${goto 11}${voffset -93}${color3}${time %x}
+${font Pf Tempesta Five:bold:size=10}${goto 70}${color1}${voffset 0}${time %l}:${time %M}
+${font AMDRTG:size=13}${goto 250}${color3}${voffset 90} battery
+${font Pf Tempesta Five:bold:size=9}${color0}${goto 220}${voffset 5}${color1}${battery_percent BAT0}%
+${font Pf Tempesta Five:bold:size=9}${color0}${goto 220}${voffset 5}${color1}${battery_percent BAT1}%${endif}${endif}
+
+${color0}${font Pf Tempesta Five:bold:size=10}${image ./icons/os.png -p 10,865 -s 100x100}${voffset -55}${goto 130}${color0}${execi 86400 . /etc/os-release && echo "$NAME | $VERSION_CODENAME ($VERSION_ID)"; cp ./icons/$ID.png ./icons/os.png }
+${color0}${font Pf Tempesta Five:bold:size=9}${goto 130}Kernel   ${color1}$kernel on $machine
+${color0}${font Pf Tempesta Five:bold:size=9}${goto 130}Uptime   ${color1}$uptime_short 
+${color0}${font Pf Tempesta Five:bold:size=9}${goto 130}Power    ${color1}$acpiacadapter
+${color0}${font Pf Tempesta Five:bold:size=9}${goto 130}User      ${color1}${exec echo `whoami`@`hostname`}
+
+${voffset 20}${color3}${font Sanskrit 2003:size=24}${goto 35}${execi 30 script/cetati.sh slogans}
+
+]];

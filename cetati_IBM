@@ -1,0 +1,138 @@
+conky.config = {
+-- Conky settings #
+-- Author Kal & Racherry
+	background = no,
+	update_interval = 2,
+
+	cpu_avg_samples = 2,
+	net_avg_samples = 2,
+
+	override_utf8_locale = true,
+
+	double_buffer = true,
+	no_buffers = true,
+	
+	text_buffer_size = 2048,
+--imlib_cache_size 0
+
+	temperature_unit = 'celsius',
+
+-- Window specifications #
+	own_window_class = 'Conky',
+	own_window = true,
+	own_window_type = 'normal',
+	own_window_transparent = true,
+	own_window_hints = 'undecorated,sticky,skip_taskbar,skip_pager,below',
+
+	border_inner_margin = 0,
+	border_outer_margin = 0,
+
+	minimum_width = 520, minimum_height = 600,
+	maximum_width = 520,
+
+	alignment = 'top_right',
+	gap_x = 50,
+
+-- Graphics settings #
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = false,
+
+	default_color = 'gray',
+	default_shade_color = 'red',
+	default_outline_color = 'green',
+
+-- Text settings #
+	use_xft = true,
+	override_utf8_locale = true,
+	xftalpha = 1,
+	uppercase = false,
+
+	temperature_unit = 'celsius',
+
+	default_color = '#999999',
+--color0 = '#f9b208',
+	color0 = '#f9b208',
+	color1 = '#e4fbff',
+	color3 = '#fa1e0e',
+	color4 = '#e4fbff',
+	color5 = 'e5d549',
+
+
+-- Lua Load  ##${voffset 750}
+	lua_load = './script/cetati_IBM_style.lua',
+	-- lua_load = 'script/hddlua.lua',
+	
+--lua_draw_hook_pre ring_stats
+	lua_draw_hook_pre = 'conky_main',
+
+};
+
+conky.text = [[
+$color1${execi 3600 ./script/cetati.sh weather}
+${goto 20}${color1}${image ./icons/map-marker.png -p 12,65 -s 12x12} $color4${voffset 40} ${goto 30}${font IBM Plex Sans:weight=Bold:size=16}${execi 3600 cat script/weather.json | jq -r '.name'} - ${execi 3600 cat script/weather.json | jq -r '.sys.country'}
+${color1}${image ./icons/temp.png -p 10,90 -s 50x50}          ${voffset 2}${goto 70}$color4${font IBM Plex Sans:weight=Bold:size=30}${execi 3600 cat script/weather.json | jq '.main.temp'}${font IBM Plex Sans:weight=Bold:size=30} °C ${voffset -3}${font IBM Plex Sans:weight=Bold:size=15} Feels Like (${execi 3600 cat script/weather.json | jq '.main.feels_like'} °C )  
+${goto 64}${voffset 2}${color1}$color4${font IBM Plex Sans:weight=Bold:size=11} ${execi 3600 cat script/weather.json | jq -r '.weather[0].main'}
+${goto 30}${color4}${font IBM Plex Sans:weight=Bold:size=11}${image ./icons/arrow-down.png -p 10,170 -s 13x13} ${voffset 4}$color0 Min									$color1${execi 3600 cat script/weather.json | jq '.main.temp_min'}°  
+${voffset -21}${goto 250}${color4}${font IBM Plex Sans:weight=Bold:size=11}${image ./icons/arrow-up.png -p 230,170 -s 12x12}$color0 Max 	$color1${execi 3600 cat script/weather.json | jq '.main.temp_max'}°
+${goto 30}${color4}${font IBM Plex Sans:weight=Bold:size=11}${image ./icons/humidity.png -p 10,193 -s 15x15} ${voffset 1}$color0 Humidity				$color1${execi 3600 cat script/weather.json | jq '.main.humidity'}% 
+${voffset -16}${goto 250}${color4}${font IBM Plex Sans:weight=Bold:size=11}${image ./icons/50d.png -p 230,195 -s 15x15}$color0 Wind $color1${execi 3600 cat script/weather.json | jq '.wind.speed'} m/s From ${goto 410}${font IBM Plex Sans:weight=Bold:size=15}${execi 3600 ./script/cetati.sh wind}  ${image ./icons/windir.png -p 450,150 -s 70x70}
+${voffset -14}${goto 30}${color4}${font IBM Plex Sans:weight=Bold:size=11}${image ./icons/pressure.png -p 10,213 -s 15x15} $color0 Pressure			 	$color1${execi 3600 cat script/weather.json | jq '.main.pressure'} hPa
+${goto 30}${color4}${font IBM Plex Sans:weight=Bold:size=11}${image ./icons/update.png -p 10,238 -s 15x15}${voffset 2} $color0 Last Update  	$color1${execi 3600 date +"%d-%m-%Y %H:%M:%S"}
+${font IBM Plex Sans:weight=Bold:size=9}${voffset 7}${goto 190}${color0}${acpitemp} °C
+${font IBM Plex Sans:weight=Bold:size=9}${voffset -2}${goto 150}${color0}CPU 1 ${alignr 290}${color1}${cpu cpu0}%
+${font IBM Plex Sans:weight=Bold:size=9}${voffset -2}${goto 150}${color0}CPU 2${alignr 290}${color1}${cpu cpu1}%
+${font IBM Plex Sans:weight=Bold:size=9}${voffset -2}${goto 150}${color0}CPU 3${alignr 290}${color1}${cpu cpu2}%
+${font IBM Plex Sans:weight=Bold:size=9}${voffset -3}${goto 150}${color0}CPU 4${alignr 290}${color1}${cpu cpu3}%
+${goto 60}${voffset 6}${font IBM Plex Sans:weight=Bold:size=9}${color0}${top name 1}${alignr 290}${color1}${top cpu 1}%
+${goto 60}${font IBM Plex Sans:weight=Bold:size=9}${color0}${top name 2}${alignr 290}${color1}${top cpu 2}%
+${goto 60}${font IBM Plex Sans:weight=Bold:size=9}${color0}${top name 3}${alignr 290}${color1}${top cpu 3}%
+${font AMDRTG:size=13}${color5}${goto 8}${voffset 7}cpu  ${font IBM Plex Sans:weight=Bold:size=13}${freq_g cpu0} GHz ${image ./icons/om.png -p 335,240 -s 190x190}
+${font AMDRTG:size=13}${color5}${goto 410}${voffset 35}memory
+${goto 350}${voffset 6}${font IBM Plex Sans:weight=Bold:size=9}${color0}${top_mem name 1}${alignr 2}${color1}${top_mem mem 1}%
+${goto 350}${font IBM Plex Sans:weight=Bold:size=9}${color0}${top_mem name 2}${alignr 5}${color1}${top_mem mem 2}%
+${goto 350}${font IBM Plex Sans:weight=Bold:size=9}${color0}${top_mem name 3}${alignr 5}${color1}${top_mem mem 3}%
+${font IBM Plex Sans:weight=Bold:size=9}${voffset 5}${goto 360}${color0}SWAP${alignr 10}${color1}${swap} / ${color1}${swapmax}
+${font IBM Plex Sans:weight=Bold:size=9}${voffset -1}${goto 361}${color0}RAM ${alignr 10}${color1}${mem} / ${color1}${memmax}
+${font IBM Plex Sans:weight=Bold:size=9}${goto 40}${voffset -90}${color0}RACHERRY${color1}${alignr 310}${execi 86400 du -sh ~ | awk '{print $1}'} / ${fs_size /}
+${font IBM Plex Sans:weight=Bold:size=9}${goto 40}${voffset -2}${color0}ARSENAL${alignr 310}${color1}${execi 86400 du -sh ~/Arsenal | awk '{print $1}'} / ${fs_size /}
+${font IBM Plex Sans:weight=Bold:size=9}${goto 40}${voffset -3}${color0}VBOX${alignr 310}${color1}${execi 86400 du -sh ~/VirtualBox\ VMs | awk '{print $1}'} / ${fs_size /}
+${font IBM Plex Sans:weight=Bold:size=9}${goto 40}${voffset -4}${color0}DOWNLOADS${alignr 310}${color1}${execi 86400 du -sh ~/Downloads | awk '{print $1}'} / ${fs_size /}
+${font AMDRTG:size=13}${color5}${goto 11}${voffset 10}Hard drive
+${font AMDRTG:size=13}${color5}${voffset 125}${goto 335}internet
+
+
+# EDITION FINIR WLAN
+${if_up wlp3s0}${font IBM Plex Sans:weight=Bold:size=9}${color0}${goto 290}${voffset -180}WiFi${goto 330}${color1}${wireless_essid wlp3s0}${font IBM Plex Sans:weight=Bold:size=9}${color0}${goto 290}${voffset 20}UP${goto 330}${color1}${totalup wlp3s0} / ${color1}${upspeed wlp3s0} 
+${font IBM Plex Sans:weight=Bold:size=9}${goto 290}${color0}DOWN${goto 335}${color1}${totaldown wlp3s0} / ${color1}${downspeed wlp3s0}
+${font IBM Plex Sans:weight=Bold:size=9}${goto 280}${voffset 10}${color0} LOCAL IP${goto 360}${color1}${addr wlp3s0}
+${font IBM Plex Sans:weight=Bold:size=9}${goto 280}${voffset -1}${color0} PUBLIC IP${goto 360}${color1}${execi 3600 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}
+${font IBM Plex Sans:weight=Bold:size=13}${goto 8}${voffset -70}${color5}${time %x}
+${font IBM Plex Sans:weight=Bold:size=14}${goto 70}${color5}${voffset 0}${time %H}:${time %M}
+${font AMDRTG:size=12}${color0}${goto 235}${color5}${voffset 87} battery
+${font AMDRTG:size=9}${color0}${goto 220}${voffset 9}${color1}external ${font IBM Plex Sans:weight=Bold:size=9}${battery_percent BAT1}%
+${font AMDRTG:size=9}${color0}${goto 220}${voffset -2}${color1}internal  ${font IBM Plex Sans:weight=Bold:size=9}${battery_percent BAT0}%
+
+
+
+# |--enp0s25
+${else}${if_up enp0s25}${font IBM Plex Sans:weight=Bold:size=9}${color0}${goto 290}${voffset 20}UP${goto 330}${color1}${totalup enp0s25} / ${color1}${upspeed enp0s25} 
+${font IBM Plex Sans:weight=Bold:size=9}${goto 290}${color0}DOWN${goto 335}${color1}${totaldown enp0s25} / ${color1}${downspeed enp0s25}
+${font IBM Plex Sans:weight=Bold:size=9}${goto 280}${voffset 10}${color0} LOCAL IP${goto 360}${color1}${addr enp0s25}
+${font IBM Plex Sans:weight=Bold:size=9}${goto 280}${voffset -1}${color0} PUBLIC IP${goto 360}${color1}${execi 3600 wget -q -O - checkip.dyndns.org | sed -e 's/[^[:digit:]\|.]//g'}
+${font IBM Plex Sans:weight=Bold:size=13}${goto 8}${voffset -70}${color5}${time %x}
+${font IBM Plex Sans:weight=Bold:size=14}${goto 70}${color5}${voffset 0}${time %H}:${time %M}
+${font AMDRTG:size=12}${color0}${goto 235}${color5}${voffset 87} battery
+${font AMDRTG:size=9}${color0}${goto 220}${voffset 9}${color1}external ${font IBM Plex Sans:weight=Bold:size=9}${battery_percent BAT1}%
+${font AMDRTG:size=9}${color0}${goto 220}${voffset -2}${color1}internal  ${font IBM Plex Sans:weight=Bold:size=9}${battery_percent BAT0}%${endif}${endif}
+
+${color5}${font IBM Plex Sans:weight=Bold}${image ./icons/os.png -p 10,865 -s 100x100}${voffset -60}${goto 130}${execi 86400 . /etc/os-release && echo "$NAME | $VERSION_CODENAME ($VERSION_ID)"; cp ./icons/$ID.png ./icons/os.png }
+${color5}${font IBM Plex Sans:weight=Bold:size=9}${goto 130}KERNEL  		${color1}$kernel on $machine
+${color5}${font IBM Plex Sans:weight=Bold:size=9}${goto 130}UPTIME  	 ${color1}$uptime_short 
+${color5}${font IBM Plex Sans:weight=Bold:size=9}${goto 130}POWER 		 ${color1}$acpiacadapter
+${color5}${font IBM Plex Sans:weight=Bold:size=9}${goto 130}USER  			 ${color1}${execi 3600 echo `whoami`@`hostname`}   
+
+${voffset 10}${color3}${font Sanskrit 2003:size=24}${goto 35}${execi 30 ./script/cetati.sh slogans}
+
+]];
