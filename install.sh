@@ -9,7 +9,7 @@ if [[ $theme == "1" ]] ; then theme="tempesta" ; unselected="IBM" ; else theme="
 [ ! -d ~/.fonts ] && mkdir ~/.fonts/
 mkdir -p ~/.conky/cetati_conky
 
-cp *.ttf ~/.fonts/  
+cp fonts/*.ttf ~/.fonts/  
 cp cetati_$theme ~/.conky/cetati_conky/
 cp -r script ~/.conky/cetati_conky/ 
 touch ~/.conky/cetati_conky/script/weather.json
